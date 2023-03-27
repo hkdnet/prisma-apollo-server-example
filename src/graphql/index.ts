@@ -28,18 +28,18 @@ export const User = objectType({
 export const UserQuery = extendType({
   type: "Query",
   definition(t) {
-    t.nonNull.field("getUserById", {
+    t.nonNull.field("getCurrentUser", {
       type: "User",
-      args: {
-        id: intArg(),
-      },
+      args: {},
       async resolve(parent, args, context) {
-        // TODO
+        if (!context.userId) {
+          throw new Error("unauthorized"); // TODO: how to handle this?
+        }
         return {
-          id: 1,
+          id: context.userId,
           name: "foo",
           email: "foo@example.com",
-        }
+        };
       },
     });
   },
