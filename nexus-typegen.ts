@@ -28,6 +28,12 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Post: { // root type
+    authorId: number; // Int!
+    body: string; // String!
+    id: number; // Int!
+    title: string; // String!
+  }
   Query: {};
   User: { // root type
     email: string; // String!
@@ -47,6 +53,13 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Post: { // field return type
+    author: NexusGenRootTypes['User']; // User!
+    authorId: number; // Int!
+    body: string; // String!
+    id: number; // Int!
+    title: string; // String!
+  }
   Query: { // field return type
     getCurrentUser: NexusGenRootTypes['User']; // User!
   }
@@ -54,10 +67,18 @@ export interface NexusGenFieldTypes {
     email: string; // String!
     id: number; // Int!
     name: string; // String!
+    posts: Array<NexusGenRootTypes['Post'] | null>; // [Post]!
   }
 }
 
 export interface NexusGenFieldTypeNames {
+  Post: { // field return type name
+    author: 'User'
+    authorId: 'Int'
+    body: 'String'
+    id: 'Int'
+    title: 'String'
+  }
   Query: { // field return type name
     getCurrentUser: 'User'
   }
@@ -65,6 +86,7 @@ export interface NexusGenFieldTypeNames {
     email: 'String'
     id: 'Int'
     name: 'String'
+    posts: 'Post'
   }
 }
 

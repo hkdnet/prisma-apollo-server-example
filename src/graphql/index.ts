@@ -1,4 +1,5 @@
 import { objectType, extendType, intArg } from "nexus";
+import { prisma } from "../context";
 
 export const User = objectType({
   name: "User",
@@ -6,6 +7,12 @@ export const User = objectType({
     t.nonNull.int("id");
     t.nonNull.string("name");
     t.nonNull.string("email");
+    t.nonNull.list.field("posts", {
+      type: "Post",
+      async resolve(parent, args, context) {
+        return prisma.post.findMany({ where: { authorId: parent.id } });
+      },
+    });
     // t.nonNull.list.nonNull.field("links", {
     //   type: "Link",
     //   resolve(parent, args, context) {
@@ -22,6 +29,29 @@ export const User = objectType({
     //       .votes();
     //   },
     // });
+  },
+});
+
+export const Post = objectType({
+  name: "Post",
+  definition(t) {
+    t.nonNull.int("id");
+    t.nonNull.string("title");
+    t.nonNull.string("body");
+    t.nonNull.int("authorId");
+    t.nonNull.field("author", {
+      type: "User",
+      async resolve(parent, args, context) {
+        const user = await context.prisma.user.findUnique({
+          where: { id: parent.authorId },
+        });
+        if (user) {
+          return user;
+        } else {
+          throw new Error("cannot find the author");
+        }
+      },
+    });
   },
 });
 
